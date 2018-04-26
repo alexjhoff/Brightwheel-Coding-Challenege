@@ -8,17 +8,25 @@
 
 import Foundation
 
+// Reusable completion handler
 typealias ContributorLoadOperationCompletionHandlerType = ((String) -> ())?
 
+// Operation class for loading top contributors asynchronously
 class ContributorLoadOperation: Operation {
+    // Top contributor URL string
     var url: String
+    
+    // Reusable completion handler
     var completionHandler: ContributorLoadOperationCompletionHandlerType
-    var request: ApiContributorRequest
+    
+    // Contributor request so that the request is not deallocated when the function goes out of scope
+    var request: ApiContributorRequest?
+    
+    // Contributor variable to be set once the api call has been made
     var contributor: String?
     
-    init(url: String, request: ApiContributorRequest) {
+    init(url: String) {
         self.url = url
-        self.request = request
     }
     
     override func main() {
@@ -26,6 +34,12 @@ class ContributorLoadOperation: Operation {
             return
         }
         
+        /*
+         From the url given instantiate ApiContributorRequest, set it to request so
+         it is not deallocated while the asynchronouse api call is run and
+         set the contributor variable and call the completion handler when
+         the api request is complete
+        */
         guard let url = URL(string: url) else { fatalError("Could not create URL") }
         let apiRequest = ApiContributorRequest(url: url)
         request = apiRequest

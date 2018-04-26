@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 extension URL {
+    // Function to build github api url from string
     public static func buildUrlWithPath(_ path: String) -> URL {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
@@ -19,6 +20,7 @@ extension URL {
         return url
     }
     
+    // Overloaded function to add query items
     public static func buildUrlWithPath(_ path: String, _ queryItems: [URLQueryItem]) -> URL {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
@@ -38,13 +40,12 @@ extension UIColor {
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
     }
     
+    // Function to convert hex into rgb
     convenience init(netHex:Int) {
         self.init(red:(netHex >> 16) & 0xff, green:(netHex >> 8) & 0xff, blue:netHex & 0xff)
     }
     
-    public static let gradientPink = UIColor(red:0.85, green:0.40, blue:0.55, alpha:1.0)
-    public static let gradientPurple = UIColor(red:0.48, green:0.08, blue:0.42, alpha:1.0)
-    
+    // Color theme for app taken off randomly generated colors from colormind.io
     struct Theme {
         static let cellBackground = UIColor(netHex: 0xF8F8F8)
         static let viewBackground = UIColor(netHex: 0x8EC0E0)
@@ -55,31 +56,3 @@ extension UIColor {
     }
     
 }
-
-//fileprivate var request = [ApiContributorRequest]()
-//class ContributorString {
-//    var requests = [ApiContributorRequest]()
-//    
-//    static func getContributorWithUrl(_ urlString: String, completion: @escaping (String) -> Void) {
-//        guard let url = URL(string: urlString) else { fatalError("Could not create URL") }
-//        let apiRequest = ApiContributorRequest(url: url)
-//        requests.append(apiRequest)
-//        apiRequest.load { (contributor) in
-//            guard let topContributor = contributor else { return }
-//            
-//            completion(topContributor.login)
-//        }
-//    }
-//}
-//extension String {
-//    static func getContributorWithUrl(_ urlString: String, request: ApiContributorRequest, completion: @escaping (String) -> Void) {
-//        guard let url = URL(string: urlString) else { fatalError("Could not create URL") }
-//        let apiRequest = ApiContributorRequest(url: url)
-//        request = apiRequest
-//        apiRequest.load { (contributor) in
-//            guard let topContributor = contributor else { return }
-//            
-//            completion(topContributor.login)
-//        }
-//    }
-//}

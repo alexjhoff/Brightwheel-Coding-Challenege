@@ -14,26 +14,33 @@ class RepoTableViewCell: UITableViewCell {
     @IBOutlet weak var starsLabel: UILabel!
     @IBOutlet weak var topContributorLabel: UILabel!
     
+    // Set labels if the a repo object is passed to the cell
     var item: Repo? {
         didSet {
             guard let item = item else { return }
             
             nameLabel.text = item.fullName
             starsLabel.text = "⭐️ " + String(describing: item.stargazersCount)
-            
-            if let contributor = item.topContributor {
-                topContributorLabel.text = "👑 " + contributor
-            }
+            topContributorLabel.text = "👑 "
         }
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+
         backgroundColor = UIColor.Theme.cellBackground
         nameLabel.textColor = UIColor.Theme.titleColor
         starsLabel.textColor = UIColor.Theme.infoColor
         topContributorLabel.textColor = UIColor.Theme.infoColor
+    }
+    
+    func setContributor(_ contributor: String, _ contributorUrl: String) {
+        // Update contributor if contributors url matches
+        if item?.contributorsUrl == contributorUrl {
+            DispatchQueue.main.async {
+                self.topContributorLabel.text = "👑 " + contributor
+            }
+        }
     }
     
     static var nib:UINib {

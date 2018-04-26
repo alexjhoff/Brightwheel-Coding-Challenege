@@ -10,41 +10,53 @@ import UIKit
 
 class RepoViewController: UIViewController {
 
+    // View model
     var viewModel: RepoViewModel!
-    let shapeLayer = CAShapeLayer()
-    let label = UILabel()
-    var timer = Timer()
+    
+    // Loading animation variables
+    private let shapeLayer = CAShapeLayer()
+    private let label = UILabel()
+    private var timer = Timer()
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // View set up methods
         setUpView()
         setUpTableView()
         setUpNavBar()
         setUpLoadingAnimation()
     }
     
+    // MARK:- View set up
+    // Modifies all view related objects
     fileprivate func setUpView() {
         // Set up gradient layer
-//        let gradient = CAGradientLayer()
-//        let frame = self.view.frame
-//        gradient.frame = frame
-//        gradient.colors = [UIColor.gradientPink.cgColor, UIColor.gradientPurple.cgColor]
-//
-//        self.view.layer.insertSublayer(gradient, at: 0)
-        view.backgroundColor = UIColor.Theme.viewBackground
-        tableView.isHidden = true
+        let gradient = CAGradientLayer()
+        let frame = self.view.frame
+        gradient.frame = frame
+        gradient.colors = [UIColor.Theme.viewBackground.cgColor,
+                           UIColor.Theme.titleColor.cgColor]
+
+        self.view.layer.insertSublayer(gradient, at: 0)
     }
     
+    // Set up table view dependencies and hide it until the repos are fetched
     fileprivate func setUpTableView() {
+        // Assign the tableview as the responder to the view models delegate protocol call
         viewModel.delegate = self
+        
+        // Assign the dataSource and delegate function responsibility to the view model
         tableView.dataSource = viewModel
+        tableView.prefetchDataSource = viewModel
         tableView.delegate = viewModel
         tableView.backgroundColor = .clear
         tableView.register(RepoTableViewCell.nib, forCellReuseIdentifier: RepoTableViewCell.identifier)
+        tableView.isHidden = true
         
+        // Reload and show the table view once the repos are loaded
         viewModel.getRepos {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -55,12 +67,14 @@ class RepoViewController: UIViewController {
         }
     }
     
+    // Set the nav bar to see through and give its header
     fileprivate func setUpNavBar() {
         navigationController?.navigationBar.topItem?.title = "Top 100 Github Repos"
-        navigationController?.navigationBar.barTintColor = UIColor.Theme.navBarColor
-        navigationController?.hidesBarsOnSwipe = true
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        navigationController?.navigationBar.shadowImage = UIImage()
     }
     
+    // Set up the loading animation objects
     fileprivate func setUpLoadingAnimation() {
         let center = view.center
         
@@ -69,7 +83,7 @@ class RepoViewController: UIViewController {
         shapeLayer.path = circularPath.cgPath
         shapeLayer.strokeColor = UIColor.Theme.infoColor.cgColor
         shapeLayer.lineWidth = 10
-        shapeLayer.fillColor = UIColor.Theme.viewBackground.cgColor
+        shapeLayer.fillColor = UIColor.clear.cgColor
         shapeLayer.lineCap = kCALineCapRound
         shapeLayer.strokeEnd = 0
         
@@ -89,6 +103,7 @@ class RepoViewController: UIViewController {
     }
     
     // MARK:- Loading Animations
+    // Create loading animations which repeat every 1.65 seconds until they are deallocated
     fileprivate func animateCircle() {
         // Create loading animation
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
@@ -128,6 +143,7 @@ class RepoViewController: UIViewController {
     }
 }
 
+// Protocol method for the view models delegate to hide the navigation bar on swipe
 extension RepoViewController: RepoViewModifier {
     func navBarIsHidden(_ cond: Bool) {
         UIView.animate(withDuration: 2.5, delay: 0, options: UIViewAnimationOptions(), animations: {

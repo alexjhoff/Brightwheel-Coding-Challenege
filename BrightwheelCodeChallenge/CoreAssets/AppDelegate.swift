@@ -17,12 +17,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         
+        // Assign a navigation controller and set its home view to RepoView
         let navController = UINavigationController()
         let homeViewController = RepoViewController()
+        navController.addChildViewController(homeViewController)
+        // Instantiate the view model
         homeViewController.viewModel = RepoViewModel()
         
+        // Set the nav bar title and status bar to white
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        UIApplication.shared.statusBarStyle = .lightContent
+        
+        // Make the nav controller the root view; This eliminates the need for a storyboard
         window!.rootViewController = navController
-        navController.addChildViewController(homeViewController)
         window!.makeKeyAndVisible()
         return true
     }
