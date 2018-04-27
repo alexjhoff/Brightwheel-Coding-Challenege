@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Network reques protocol lays out a framework for network request without creating uncessary objects
+// Network reques protocol lays out a framework for network request 
 protocol NetworkRequest: class {
     associatedtype Model
     func load(withCompletion completion: @escaping (Model?) -> Void)
@@ -18,9 +18,7 @@ protocol NetworkRequest: class {
 // Extend the network request functionality for all network load requests
 extension NetworkRequest {
     // Standard URLSession data task request
-    fileprivate func load(_ url: URL, withCompletion completion: @escaping (Model?) -> Void) {
-        let configuration = URLSessionConfiguration.default
-        let session = URLSession(configuration: configuration)
+    fileprivate func load(_ url: URL, _ session: URLSessionProtocol, withCompletion completion: @escaping (Model?) -> Void) {
         let task = session.dataTask(with: url, completionHandler: { [weak self] (data: Data?, response: URLResponse?, error: Error?) -> Void in
             // Make sure there are no errors
             if let error = error {
@@ -44,10 +42,12 @@ extension NetworkRequest {
 
 // Class for making repo requests
 class ApiRepoRequest {
-    let url: URL
+    private let url: URL
+    private let session: URLSessionProtocol
     
-    init(url: URL) {
+    init(url: URL, session: URLSessionProtocol) {
         self.url = url
+        self.session = session
     }
 }
 
@@ -67,16 +67,18 @@ extension ApiRepoRequest: NetworkRequest {
     }
     
     func load(withCompletion completion: @escaping (Model?) -> Void) {
-        load(url, withCompletion: completion)
+        load(url, session, withCompletion: completion)
     }
 }
 
 // Class for making contributor requests
 class ApiContributorRequest {
-    let url: URL
+    private let url: URL
+    private let session: URLSessionProtocol
     
-    init(url: URL) {
+    init(url: URL, session: URLSessionProtocol) {
         self.url = url
+        self.session = session
     }
 }
 
@@ -94,9 +96,9 @@ extension ApiContributorRequest: NetworkRequest {
             return nil
         }
     }
-    
+
     func load(withCompletion completion: @escaping (Model?) -> Void) {
-        load(url, withCompletion: completion)
+        load(url, session, withCompletion: completion)
     }
 }
 

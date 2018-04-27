@@ -41,7 +41,8 @@ class ContributorLoadOperation: Operation {
          the api request is complete
         */
         guard let url = URL(string: url) else { fatalError("Could not create URL") }
-        let apiRequest = ApiContributorRequest(url: url)
+        let urlSession = URLSession.shared
+        let apiRequest = ApiContributorRequest(url: url, session: urlSession)
         request = apiRequest
         apiRequest.load { [weak self] (contributor) in
             guard let strongSelf = self else { return }

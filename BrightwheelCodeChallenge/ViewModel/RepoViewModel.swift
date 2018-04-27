@@ -46,7 +46,8 @@ class RepoViewModel: NSObject {
                           URLQueryItem(name: "page", value: "1"),
                           URLQueryItem(name: "per_page", value: "100")]
         let url = URL.buildUrlWithPath(path, queryItems)
-        let apiRequest = ApiRepoRequest(url: url)
+        let urlSession = URLSession.shared
+        let apiRequest = ApiRepoRequest(url: url, session: urlSession)
         repoRequest = apiRequest
         apiRequest.load { [weak self] (session: Session?) in
             guard let strongSelf = self else { fatalError("Weak self deallocated") }

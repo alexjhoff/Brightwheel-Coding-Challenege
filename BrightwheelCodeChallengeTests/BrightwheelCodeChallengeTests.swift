@@ -46,10 +46,11 @@ class BrightwheelCodeChallengeTests: XCTestCase {
     func testAPICallCompletes() {
         // Given
         let testUrl = URL(string: "https://api.github.com/search/repositories?q=all&sort=stars&order=desc&page=1&per_page=100")
+        let session = MockSession()
         let promise = expectation(description: "Download github repo data")
         
         // When
-        let apiRequest = ApiRepoRequest(url: testUrl!)
+        let apiRequest = ApiRepoRequest(url: testUrl!, session: session)
         request = apiRequest
         apiRequest.load { (session: Session?) in
             //Make sure data was downloaded
@@ -58,6 +59,7 @@ class BrightwheelCodeChallengeTests: XCTestCase {
             promise.fulfill()
         }
         waitForExpectations(timeout: 5, handler: nil)
+        
     }
     
 }
